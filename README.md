@@ -7,24 +7,25 @@
     body { font-family: sans-serif; padding: 20px; }
     .track {
       position: relative;
-      width: 100%;
-      height: 200px;
-      border: 2px solid #000;
+      width: 1000px;
+      height: 260px;
+      border: 3px solid #000;
       margin-bottom: 20px;
+      background-color: #f0f0f0;
     }
     .horse {
       position: absolute;
-      width: 60px;
+      width: 200px;
       height: 40px;
-      background-color: lightblue;
-      border: 2px solid #333;
-      border-radius: 5px;
+      color: #fff;
+      font-weight: bold;
       text-align: center;
       line-height: 40px;
+      border-radius: 5px;
     }
-    .horse:nth-child(1) { top: 20px; background-color: #f77; }
-    .horse:nth-child(2) { top: 80px; background-color: #7f7; }
-    .horse:nth-child(3) { top: 140px; background-color: #77f; }
+    #horse1 { top: 30px; background-color: #e74c3c; }
+    #horse2 { top: 110px; background-color: #27ae60; }
+    #horse3 { top: 190px; background-color: #2980b9; }
   </style>
 </head>
 <body>
@@ -33,9 +34,9 @@
   <button onclick="startRace()">시작</button>
 
   <div class="track" id="track">
-    <div class="horse" id="horse1">1번</div>
-    <div class="horse" id="horse2">2번</div>
-    <div class="horse" id="horse3">3번</div>
+    <div class="horse" id="horse1">1번 말</div>
+    <div class="horse" id="horse2">2번 말</div>
+    <div class="horse" id="horse3">3번 말</div>
   </div>
 
   <div id="result"></div>
@@ -48,7 +49,8 @@
       { id: 'horse3', name: '3번 말', pos: 0, wins: 0 }
     ];
 
-    const finishLine = 900;
+    const horseWidth = 200;
+    const trackWidth = 1000;
     let raceInterval = null;
     let running = false;
 
@@ -65,9 +67,19 @@
       });
     }
 
+    function getMove(horseIndex) {
+      if (horseIndex === 0) {
+        return Math.floor(Math.random() * 11) + 10; // 10~20
+      } else if (horseIndex === 1) {
+        return Math.floor(Math.random() * 40) + 1;  // 1~40
+      } else if (horseIndex === 2) {
+        return Math.random() < 0.1 ? 100 : 0; // 10% 확률 100
+      }
+    }
+
     function updatePositions() {
-      horses.forEach(horse => {
-        const move = Math.random() * 10 + 1; // 1 ~ 11
+      horses.forEach((horse, i) => {
+        const move = getMove(i);
         horse.pos += move;
         document.getElementById(horse.id).style.left = horse.pos + 'px';
       });
@@ -75,7 +87,7 @@
 
     function checkWinner() {
       for (let horse of horses) {
-        if (horse.pos >= finishLine) {
+        if (horse.pos + horseWidth >= trackWidth) {
           running = false;
           clearInterval(raceInterval);
           horse.wins++;
@@ -114,7 +126,7 @@
       raceInterval = setInterval(() => {
         updatePositions();
         checkWinner();
-      }, 50);
+      }, 100);
     }
   </script>
 
