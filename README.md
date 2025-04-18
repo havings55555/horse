@@ -69,7 +69,7 @@
 
     function getMove(horseIndex) {
       if (horseIndex === 0) {
-        return Math.floor(Math.random() * 11) + 10; // 10~20
+        return Math.floor(Math.random() * 21) + 10; // 10~20
       } else if (horseIndex === 1) {
         return Math.floor(Math.random() * 40) + 1;  // 1~40
       } else if (horseIndex === 2) {
