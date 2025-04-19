@@ -90,9 +90,9 @@
     }
 
     function updateSpeeds() {
-      horses[0].speed = Math.floor(Math.random() * 501) + 500;  // 500~1000
-      horses[1].speed = Math.floor(Math.random() * 1001) + 300; // 300~1300
-      horses[2].speed = Math.floor(Math.random() * 1401) + 100; // 100~1500
+      horses[0].speed = Math.floor(Math.random() * 351) + 250;  // 250~600
+      horses[1].speed = Math.floor(Math.random() * 501) + 150; // 150~650
+      horses[2].speed = Math.floor(Math.random() * 651) + 50; // 50~700
     }
 
     function moveHorses(timestamp) {
