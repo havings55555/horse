@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>경마 게임</title>
+  <title>밸런스 조정 경마 게임</title>
   <style>
     body { font-family: sans-serif; padding: 20px; }
     .track {
@@ -30,7 +30,7 @@
 </head>
 <body>
 
-  <h1>초고속 경마 게임</h1>
+  <h1>밸런스 조정 경마 게임</h1>
   <button onclick="startRace()">시작</button>
   <button onclick="resetStats()">승률 초기화</button>
 
@@ -90,14 +90,20 @@
     }
 
     function updateSpeeds() {
-      horses[0].speed = Math.floor(Math.random() * 351) + 250;  // 250~600
-      horses[1].speed = Math.floor(Math.random() * 471) + 150; // 150~620
-      horses[2].speed = Math.floor(Math.random() * 611) + 50; // 50~640
+      horses[0].speed = Math.floor(Math.random() * 501) + 800;  // 800~1300 (우위)
+      horses[1].speed = Math.floor(Math.random() * 601) + 200;  // 200~800
+
+      // 3번 말: 80% 느림, 20% 빠름
+      if (Math.random() < 0.2) {
+        horses[2].speed = Math.floor(Math.random() * 201) + 800; // 800~1000
+      } else {
+        horses[2].speed = Math.floor(Math.random() * 151) + 50;  // 50~200
+      }
     }
 
     function moveHorses(timestamp) {
       if (!lastFrame) lastFrame = timestamp;
-      const delta = (timestamp - lastFrame) / 1000; // 초
+      const delta = (timestamp - lastFrame) / 1000;
       lastFrame = timestamp;
 
       horses.forEach(horse => {
@@ -149,7 +155,7 @@
       running = true;
 
       updateSpeeds();
-      raceInterval = setInterval(updateSpeeds, 200); // 0.2초마다 속도 갱신
+      raceInterval = setInterval(updateSpeeds, 200);
       animationId = requestAnimationFrame(moveHorses);
     }
   </script>
