@@ -22,6 +22,7 @@
       text-align: center;
       line-height: 40px;
       border-radius: 5px;
+      transition: left 0.05s linear;
     }
     #horse1 { top: 30px; background-color: #e74c3c; }
     #horse2 { top: 110px; background-color: #27ae60; }
@@ -32,6 +33,7 @@
 
   <h1>경마 게임</h1>
   <button onclick="startRace()">시작</button>
+  <button onclick="resetStats()">승률 초기화</button>
 
   <div class="track" id="track">
     <div class="horse" id="horse1">1번 말</div>
@@ -44,14 +46,16 @@
 
   <script>
     const horses = [
-      { id: 'horse1', name: '1번 말', pos: 0, wins: 0 },
-      { id: 'horse2', name: '2번 말', pos: 0, wins: 0 },
-      { id: 'horse3', name: '3번 말', pos: 0, wins: 0 }
+      { id: 'horse1', name: '1번 말', pos: 0, wins: 0, speed: 0 },
+      { id: 'horse2', name: '2번 말', pos: 0, wins: 0, speed: 0 },
+      { id: 'horse3', name: '3번 말', pos: 0, wins: 0, speed: 0 }
     ];
 
     const horseWidth = 200;
     const trackWidth = 1000;
     let raceInterval = null;
+    let animationId = null;
+    let lastFrame = null;
     let running = false;
 
     function loadStats() {
@@ -67,28 +71,53 @@
       });
     }
 
-    function getMove(horseIndex) {
-      if (horseIndex === 0) {
-        return Math.floor(Math.random() * 21) + 10; // 10~20
-      } else if (horseIndex === 1) {
-        return Math.floor(Math.random() * 40) + 1;  // 1~40
-      } else if (horseIndex === 2) {
-        return Math.random() < 0.1 ? 100 : 0; // 10% 확률 100
-      }
+    function resetStats() {
+      horses.forEach(horse => {
+        horse.wins = 0;
+        localStorage.removeItem(horse.id);
+      });
+      updateStatsUI();
     }
 
-    function updatePositions() {
-      horses.forEach((horse, i) => {
-        const move = getMove(i);
-        horse.pos += move;
+    function updateStatsUI() {
+      let totalWins = horses.reduce((acc, h) => acc + h.wins, 0);
+      let statsHTML = '<h3>승률</h3><ul>';
+      horses.forEach(h => {
+        const percent = totalWins ? ((h.wins / totalWins) * 100).toFixed(1) : 0;
+        statsHTML += `<li>${h.name}: ${h.wins}승 (${percent}%)</li>`;
+      });
+      statsHTML += '</ul>';
+      document.getElementById('stats').innerHTML = statsHTML;
+    }
+
+    function updateSpeeds() {
+      horses[0].speed = Math.floor(Math.random() * 11) + 10; // 10~20 px/sec
+      horses[1].speed = Math.floor(Math.random() * 21) + 5;  // 5~25 px/sec
+      horses[2].speed = Math.floor(Math.random() * 31);      // 0~30 px/sec
+    }
+
+    function moveHorses(timestamp) {
+      if (!lastFrame) lastFrame = timestamp;
+      const delta = (timestamp - lastFrame) / 1000; // 초 단위
+      lastFrame = timestamp;
+
+      horses.forEach(horse => {
+        horse.pos += horse.speed * delta;
         document.getElementById(horse.id).style.left = horse.pos + 'px';
       });
+
+      checkWinner();
+
+      if (running) {
+        animationId = requestAnimationFrame(moveHorses);
+      }
     }
 
     function checkWinner() {
       for (let horse of horses) {
         if (horse.pos + horseWidth >= trackWidth) {
           running = false;
+          cancelAnimationFrame(animationId);
           clearInterval(raceInterval);
           horse.wins++;
           saveStats();
@@ -100,33 +129,29 @@
 
     function showResult(winnerName) {
       document.getElementById('result').innerHTML = `<h2>우승: ${winnerName}</h2>`;
-      let totalWins = horses.reduce((acc, h) => acc + h.wins, 0);
-      let statsHTML = '<h3>승률</h3><ul>';
-      horses.forEach(h => {
-        const percent = totalWins ? ((h.wins / totalWins) * 100).toFixed(1) : 0;
-        statsHTML += `<li>${h.name}: ${h.wins}승 (${percent}%)</li>`;
-      });
-      statsHTML += '</ul>';
-      document.getElementById('stats').innerHTML = statsHTML;
+      updateStatsUI();
     }
 
     function resetRace() {
       horses.forEach(horse => {
         horse.pos = 0;
+        horse.speed = 0;
         document.getElementById(horse.id).style.left = '0px';
       });
       document.getElementById('result').innerHTML = '';
+      lastFrame = null;
     }
 
     function startRace() {
       if (running) return;
       resetRace();
       loadStats();
+      updateStatsUI();
       running = true;
-      raceInterval = setInterval(() => {
-        updatePositions();
-        checkWinner();
-      }, 100);
+
+      updateSpeeds();
+      raceInterval = setInterval(updateSpeeds, 500); // 속도 0.5초마다 갱신
+      animationId = requestAnimationFrame(moveHorses);
     }
   </script>
 
