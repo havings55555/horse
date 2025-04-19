@@ -2,13 +2,13 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>가로 경마 게임</title>
+  <title>경마 게임 (밸런스 조정)</title>
   <style>
     body { font-family: sans-serif; padding: 20px; }
 
     .track {
       position: relative;
-      width: 2000px; /* 가로 길이 복원 */
+      width: 2000px;
       height: 260px;
       border: 3px solid #000;
       margin-bottom: 20px;
@@ -34,7 +34,7 @@
 </head>
 <body>
 
-  <h1>가로 경마 게임</h1>
+  <h1>경마 게임 (밸런스 조정)</h1>
   <button onclick="startRace()">시작</button>
   <button onclick="resetStats()">승률 초기화</button>
 
@@ -55,7 +55,7 @@
     ];
 
     const horseWidth = 200;
-    const trackWidth = 2000; // 트랙 길이 복원
+    const trackWidth = 2000;
     let raceInterval = null;
     let animationId = null;
     let lastFrame = null;
@@ -94,12 +94,14 @@
     }
 
     function updateSpeeds() {
-      horses[0].speed = Math.floor(Math.random() * 501) + 800;  // 800~1300
-      horses[1].speed = Math.floor(Math.random() * 601) + 200;  // 200~800
-      if (Math.random() < 0.2) {
+      horses[0].speed = Math.floor(Math.random() * 301) + 700;  // 700~1000
+      horses[1].speed = Math.floor(Math.random() * 601) + 400;  // 400~1000
+
+      // 3번 말: 30% 빠름
+      if (Math.random() < 0.3) {
         horses[2].speed = Math.floor(Math.random() * 201) + 800; // 800~1000
       } else {
-        horses[2].speed = Math.floor(Math.random() * 151) + 50;  // 50~200
+        horses[2].speed = Math.floor(Math.random() * 101) + 50;  // 50~150
       }
     }
 
