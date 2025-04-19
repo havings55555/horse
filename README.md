@@ -98,8 +98,8 @@
       horses[1].speed = Math.floor(Math.random() * 601) + 400;  // 400~1000
 
       // 3번 말: 40% 빠름
-      if (Math.random() < 0.4) {
-        horses[2].speed = Math.floor(Math.random() * 201) + 800; // 800~1000
+      if (Math.random() < 0.5) {
+        horses[2].speed = Math.floor(Math.random() * 201) + 1000; // 800~1000
       } else {
         horses[2].speed = Math.floor(Math.random() * 101) + 50;  // 50~150
       }
