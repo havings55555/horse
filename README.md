@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>경마 게임 - 속도감 UP</title>
+  <title>경마 게임</title>
   <style>
     body { font-family: sans-serif; padding: 20px; }
     .track {
@@ -30,7 +30,7 @@
 </head>
 <body>
 
-  <h1>경마 게임</h1>
+  <h1>초고속 경마 게임</h1>
   <button onclick="startRace()">시작</button>
   <button onclick="resetStats()">승률 초기화</button>
 
@@ -90,9 +90,9 @@
     }
 
     function updateSpeeds() {
-      horses[0].speed = Math.floor(Math.random() * 101) + 100;  // 50~100 px/s
-      horses[1].speed = Math.floor(Math.random() * 201) + 60; // 30~130 px/s
-      horses[2].speed = Math.floor(Math.random() * 251) + ㅈ0; // 50~150 px/s
+      horses[0].speed = Math.floor(Math.random() * 501) + 500;  // 500~1000
+      horses[1].speed = Math.floor(Math.random() * 1001) + 300; // 300~1300
+      horses[2].speed = Math.floor(Math.random() * 1401) + 100; // 100~1500
     }
 
     function moveHorses(timestamp) {
@@ -156,4 +156,3 @@
 
 </body>
 </html>
-
