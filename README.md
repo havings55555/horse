@@ -2,35 +2,40 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>밸런스 조정 경마 게임</title>
+  <title>세로 경마 게임</title>
   <style>
     body { font-family: sans-serif; padding: 20px; }
+
     .track {
       position: relative;
-      width: 1000px;
-      height: 260px;
+      width: 300px;
+      height: 2000px; /* 세로 길이 */
       border: 3px solid #000;
       margin-bottom: 20px;
       background-color: #f0f0f0;
+      overflow: hidden;
     }
+
     .horse {
       position: absolute;
-      width: 200px;
-      height: 40px;
+      width: 90px;
+      height: 200px;
       color: #fff;
       font-weight: bold;
       text-align: center;
-      line-height: 40px;
-      border-radius: 5px;
+      writing-mode: vertical-rl;
+      line-height: 90px;
+      border-radius: 8px;
     }
-    #horse1 { top: 30px; background-color: #e74c3c; }
-    #horse2 { top: 110px; background-color: #27ae60; }
-    #horse3 { top: 190px; background-color: #2980b9; }
+
+    #horse1 { left: 10px; background-color: #e74c3c; }
+    #horse2 { left: 110px; background-color: #27ae60; }
+    #horse3 { left: 210px; background-color: #2980b9; }
   </style>
 </head>
 <body>
 
-  <h1>밸런스 조정 경마 게임</h1>
+  <h1>세로 경마 게임</h1>
   <button onclick="startRace()">시작</button>
   <button onclick="resetStats()">승률 초기화</button>
 
@@ -50,8 +55,8 @@
       { id: 'horse3', name: '3번 말', pos: 0, wins: 0, speed: 0 }
     ];
 
-    const horseWidth = 200;
-    const trackWidth = 1000;
+    const horseHeight = 200;
+    const trackHeight = 2000;
     let raceInterval = null;
     let animationId = null;
     let lastFrame = null;
@@ -90,10 +95,8 @@
     }
 
     function updateSpeeds() {
-      horses[0].speed = Math.floor(Math.random() * 501) + 800;  // 800~1300 (우위)
+      horses[0].speed = Math.floor(Math.random() * 501) + 800;  // 800~1300
       horses[1].speed = Math.floor(Math.random() * 601) + 200;  // 200~800
-
-      // 3번 말: 80% 느림, 20% 빠름
       if (Math.random() < 0.2) {
         horses[2].speed = Math.floor(Math.random() * 201) + 800; // 800~1000
       } else {
@@ -108,7 +111,7 @@
 
       horses.forEach(horse => {
         horse.pos += horse.speed * delta;
-        document.getElementById(horse.id).style.left = horse.pos + 'px';
+        document.getElementById(horse.id).style.top = horse.pos + 'px';
       });
 
       checkWinner();
@@ -120,7 +123,7 @@
 
     function checkWinner() {
       for (let horse of horses) {
-        if (horse.pos + horseWidth >= trackWidth) {
+        if (horse.pos + horseHeight >= trackHeight) {
           running = false;
           cancelAnimationFrame(animationId);
           clearInterval(raceInterval);
@@ -141,7 +144,7 @@
       horses.forEach(horse => {
         horse.pos = 0;
         horse.speed = 0;
-        document.getElementById(horse.id).style.left = '0px';
+        document.getElementById(horse.id).style.top = '0px';
       });
       document.getElementById('result').innerHTML = '';
       lastFrame = null;
