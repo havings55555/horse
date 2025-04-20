@@ -94,14 +94,14 @@
     }
 
     function updateSpeeds() {
-      horses[0].speed = Math.floor(Math.random() * 251) + 600;  // 600~850
-      horses[1].speed = Math.floor(Math.random() * 601) + 400;  // 400~1000
+      horses[0].speed = Math.floor(Math.random() * 151) + 300;  // 300~450
+      horses[1].speed = Math.floor(Math.random() * 301) + 200;  // 200~5  00
 
       // 3번 말: 40% 빠름
       if (Math.random() < 0.5) {
-        horses[2].speed = Math.floor(Math.random() * 201) + 1000; // 800~1000
+        horses[2].speed = Math.floor(Math.random() * 101) + 400; // 400~500
       } else {
-        horses[2].speed = Math.floor(Math.random() * 101) + 50;  // 50~150
+        horses[2].speed = Math.floor(Math.random() * 76) + 25;  // 25~100
       }
     }
 
