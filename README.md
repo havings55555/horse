@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>경마 게임 - 밸런스 보정</title>
+  <title>사용자 승률 설정 경마</title>
   <style>
     body { font-family: sans-serif; padding: 20px; }
 
@@ -11,9 +11,8 @@
       width: 2000px;
       height: 260px;
       border: 3px solid #000;
-      margin-bottom: 20px;
+      margin: 20px 0;
       background-color: #f0f0f0;
-      overflow: hidden;
     }
 
     .horse {
@@ -30,13 +29,23 @@
     #horse1 { top: 30px; background-color: #e74c3c; }
     #horse2 { top: 110px; background-color: #27ae60; }
     #horse3 { top: 190px; background-color: #2980b9; }
+
+    input[type="number"] {
+      width: 60px;
+    }
   </style>
 </head>
 <body>
 
-  <h1>경마 게임 - 밸런스 보정</h1>
-  <button onclick="startRace()">시작</button>
-  <button onclick="resetStats()">승률 초기화</button>
+  <h1>사용자 승률 기반 경마 게임</h1>
+
+  <div>
+    <label>1번 말 승률 (%) <input id="rate1" type="number" value="60" min="0" max="100"></label>
+    <label>2번 말 승률 (%) <input id="rate2" type="number" value="30" min="0" max="100"></label>
+    <label>3번 말 승률 (%) <input id="rate3" type="number" value="10" min="0" max="100"></label>
+    <button onclick="startRace()">시작</button>
+    <button onclick="resetStats()">승률 초기화</button>
+  </div>
 
   <div class="track" id="track">
     <div class="horse" id="horse1">1번 말</div>
@@ -60,6 +69,7 @@
     let animationId = null;
     let lastFrame = null;
     let running = false;
+    let winRates = [60, 30, 10];
 
     function loadStats() {
       horses.forEach(horse => {
@@ -93,16 +103,32 @@
       document.getElementById('stats').innerHTML = statsHTML;
     }
 
-    function updateSpeeds() {
-      horses[0].speed = Math.floor(Math.random() * 151) + 300;  // 300~450
-      horses[1].speed = Math.floor(Math.random() * 301) + 200;  // 200~5  00
+    function getRates() {
+      const r1 = parseInt(document.getElementById('rate1').value) || 0;
+      const r2 = parseInt(document.getElementById('rate2').value) || 0;
+      const r3 = parseInt(document.getElementById('rate3').value) || 0;
+      const total = r1 + r2 + r3 || 1;
+      return [r1 / total, r2 / total, r3 / total]; // 정규화
+    }
 
-      // 3번 말: 40% 빠름
-      if (Math.random() < 0.5) {
-        horses[2].speed = Math.floor(Math.random() * 101) + 400; // 400~500
-      } else {
-        horses[2].speed = Math.floor(Math.random() * 76) + 25;  // 25~100
-      }
+    function updateSpeeds() {
+      winRates = getRates();
+
+      horses.forEach((horse, i) => {
+        const rate = winRates[i];
+
+        if (rate >= 0.6) {
+          horse.speed = Math.floor(Math.random() * 301) + 700;  // 700~1000
+        } else if (rate >= 0.3) {
+          horse.speed = Math.floor(Math.random() * 601) + 400;  // 400~1000
+        } else {
+          if (Math.random() < rate + 0.05) {
+            horse.speed = Math.floor(Math.random() * 201) + 900; // 빠름
+          } else {
+            horse.speed = Math.floor(Math.random() * 81) + 30;   // 느림
+          }
+        }
+      });
     }
 
     function moveHorses(timestamp) {
